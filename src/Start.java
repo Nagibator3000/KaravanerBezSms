@@ -9,16 +9,11 @@ public class Start {
     public static void main(String[] args) throws IOException {
         Gui myGui = new Gui();
         myGui.goGui();
-      /*  Player player = new Player(name);
+        Player player = new Player(Gui.s);
         player.gold = 2000;
         player.lvl = 1;
-        player.power = 10;*/
-
-
+        player.power = 10;
     }
-
-
-
 
 
 }
