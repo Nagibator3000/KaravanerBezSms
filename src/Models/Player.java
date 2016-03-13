@@ -6,6 +6,7 @@ public class Player {
     public int lvl;
     public int power;
     public String name;
+    public int respect;
 
     public Player(String name) {
         this.name = name;

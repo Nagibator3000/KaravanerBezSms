@@ -1,19 +1,23 @@
 import Models.Enemy;
 import Models.Player;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Start {
+    static Player player;
+
     public static void main(String[] args) throws IOException {
         Gui myGui = new Gui();
         myGui.goGui();
-        Player player = new Player(Gui.s);
+        player = new Player(Gui.playerName);
         player.gold = 2000;
         player.lvl = 1;
-        player.power = 10;
+        player.respect = 20;
+
     }
+
 
 
 }

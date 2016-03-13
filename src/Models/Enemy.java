@@ -1,15 +1,15 @@
 package Models;
 
 public  class Enemy {
-    int lvl;
-    double gold;
+   public int lvl;
+    public int gold;
 
     public Enemy() {
     }
 
-    int power;
+    public int power;
 
-    public Enemy(int lvl, double gold, int power) {
+    public Enemy(int lvl, int gold, int power) {
         this.lvl = lvl;
         this.gold = gold;
         this.power = power;
