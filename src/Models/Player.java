@@ -8,10 +8,7 @@ public class Player {
     public String name;
     public int respect;
 
-    public Player(String name) {
-        this.name = name;
 
-    }
 
 
 }
