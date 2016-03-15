@@ -2,9 +2,9 @@ package Models;
 
 public class Player {
     public String name;
-    int lvl;
-    int respect;
-    int gold;
+    int lvl =1;
+    int respect=100;
+    int gold=2000;
 
     public String getName() {
         return name;

@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class Gui {
     Logic logic = new Logic();
@@ -9,12 +11,8 @@ public class Gui {
     JFrame enterNameFrame;
     JFrame startFrame;
     JFrame enterFrame;
-
     JFrame mainMenuFrame;
-
-
     JPanel mainPanel;
-
     JButton skipButton;
     private JTextField enterNameTextField;
     private JTextField enemyLvlTextField;
@@ -22,6 +20,8 @@ public class Gui {
     private JButton robKorovanButton;
     private JFrame enemyInfoFrame;
     private JButton infoEnemyButton;
+    private JTextArea resultRob;
+    private JProgressBar goldProgress;
 
     public void goGui() {
         startFrame = new JFrame("SuperGame");
@@ -47,6 +47,7 @@ public class Gui {
             goEnterNameFrame();
         }
     }
+
     private void goEnterNameFrame() {
         enterNameFrame = new JFrame("Enter Name");
         enterNameFrame.setResizable(false);
@@ -154,6 +155,24 @@ public class Gui {
         mainMenuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainMenuFrame.setLayout(null);
 
+        JPanel headerPanel = new JPanel(null);
+        headerPanel.setBackground(new Color(200, 200, 64));
+        headerPanel.setBounds(0, 0, 500, 80);
+
+        JPanel headerLeftPanel = new JPanel(null);
+        headerLeftPanel.setBackground(new Color(167, 33, 200));
+        headerLeftPanel.setBounds(10, 5, 230, 70);
+
+        JPanel headerRightPanel = new JPanel(null);
+        headerRightPanel.setBackground(new Color(157, 200, 173));
+        headerRightPanel.setBounds(260, 5, 230, 70);
+
+        goldProgress = new JProgressBar();
+        goldProgress.setMinimum(0);
+        goldProgress.setMaximum(50000);
+        goldProgress.setStringPainted(true);
+        goldProgress.setValue(logic.player.getGold());
+
         JPanel panelButton = new JPanel(null);
         panelButton.setBackground(new Color(137, 152, 64));
         panelButton.setBounds(0, 300, 500, 80);
@@ -172,9 +191,9 @@ public class Gui {
         korovanPanel.setBackground(new Color(152, 147, 155));
         korovanPanel.setBounds(10, 10, 235, 200);
 
-        JTextArea resultRob = new JTextArea();
+        resultRob = new JTextArea();
         JScrollPane jScrollPane = new JScrollPane(resultRob);
-        jScrollPane.setPreferredSize(new Dimension(100,100));
+        jScrollPane.setPreferredSize(new Dimension(100, 100));
         jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane.setBackground(new Color(152, 147, 155));
@@ -196,28 +215,31 @@ public class Gui {
         korovanPanel.add(enemyGoldTextField);
         korovanPanel.add(infoEnemyButton);
 
-
         enemyLvlLabel.setBounds(35, 35, 110, 20);
         enemyLvlTextField.setBounds(175, 35, 50, 20);
         enemyGoldLabel.setBounds(35, 90, 110, 20);
         enemyGoldTextField.setBounds(175, 90, 50, 20);
         infoEnemyButton.setBounds(50, 145, 135, 20);
-        infoEnemyButton.addActionListener(new InfoEnemyListener());
+        infoEnemyButton.addMouseListener(new InfoEnemyListener());
         infoEnemyButton.setVisible(false);
 
+        headerPanel.add(headerLeftPanel);
+        headerPanel.add(headerRightPanel);
+
+        headerRightPanel.add(goldProgress);
 
         mainPanel.add(korovanPanel);
         mainPanel.add(jScrollPane);
-
 
         panelButton.add(skipButton);
         panelButton.add(robKorovanButton);
         panelButton.add(backButton);
 
-
         mainMenuFrame.add(panelButton);
         mainMenuFrame.add(mainPanel);
+        mainMenuFrame.add(headerPanel);
 
+        goldProgress.setBounds(20, 20, 100, 20);
 
         skipButton.setBounds(330, 10, 120, 30);
         robKorovanButton.setBounds(200, 10, 100, 30);
@@ -227,10 +249,32 @@ public class Gui {
         backButton.addActionListener(new BackButtonListener());
 
     }
-    public class   InfoEnemyListener implements ActionListener{
+
+    public class InfoEnemyListener implements MouseListener {
+
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
             goEnemyInfoFrame();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            enemyInfoFrame.setVisible(false);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
         }
     }
 
@@ -243,20 +287,20 @@ public class Gui {
         enemyInfoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         enemyInfoFrame.setLayout(null);
 
-        JLabel label =  new JLabel("Шанс удачного ограбления: "+logic.chance*100+"%");
+        JLabel label = new JLabel("Шанс удачного ограбления: " + logic.chance * 100 + "%");
         enemyInfoFrame.add(label);
 
-        label.setBounds(0,0,210,50);
+        label.setBounds(0, 0, 210, 50);
     }
 
     public class RobKorovanListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            logic.nextProcess(2);
+            resultRob.setText(resultRob.getText() + logic.nextProcess(2));
             enemyLvlTextField.setText(String.valueOf(logic.enemy.getLvl()));
             enemyGoldTextField.setText(String.valueOf(logic.enemy.getGold()));
-
-
+            goldProgress.setValue(logic.player.getGold());
+            System.out.println(goldProgress.getValue());
         }
     }
 
@@ -271,9 +315,12 @@ public class Gui {
                 enemyGoldTextField.setText(String.valueOf(logic.enemy.getGold()));
                 robKorovanButton.setVisible(true);
             } else {
-                logic.nextProcess(1);
+                resultRob.setText(resultRob.getText() + logic.nextProcess(1));
                 enemyLvlTextField.setText(String.valueOf(logic.enemy.getLvl()));
                 enemyGoldTextField.setText(String.valueOf(logic.enemy.getGold()));
+                goldProgress.setValue(logic.player.getGold());
+                System.out.println(goldProgress.getValue());
+
             }
         }
     }
@@ -283,7 +330,6 @@ public class Gui {
         public void actionPerformed(ActionEvent e) {
             mainMenuFrame.setVisible(false);
             enterFrame.setVisible(true);
-
         }
     }
 

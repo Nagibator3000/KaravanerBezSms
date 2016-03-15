@@ -7,9 +7,6 @@ public class Logic {
     float chance = 0;
 
     public void createGame() {
-        player.setLvl(1);
-        player.setGold(2000);
-        player.setRespect(100);
         System.out.println("player name " + player.getName());
         System.out.println("lvl " + player.getLvl());
         System.out.println("gold " + player.getGold());
@@ -22,9 +19,10 @@ public class Logic {
         calcChance();
     }
 
-    public void nextProcess(int i) {
+    public String nextProcess(int i) {
         createEnemy();
-        update(i);
+        String s=  update(i);
+        return s;
     }
 
     private void calcGold() {
@@ -34,12 +32,14 @@ public class Logic {
     private void calcChance() {
         chance = (float) (1 * 0.75);
         System.out.println(chance);
-
     }
 
-    public void update(int i) {
+    public String update(int i) {
+        String s;
         if (i == 1) {
+            s="Караван пропущен";
             skipEnemy();
+
         } else {
 
             int y = 0 + (int)(Math.random() * ((100 - 0) + 1)) ;
@@ -47,11 +47,15 @@ public class Logic {
             System.out.println(y);
             if (y > (chance*100)) {
                 failedRobEnemy();
+                s="Караван не удалось ограбить";
+
             } else {
+                s="Караван успешно ограблен";
+
                 robEnemy();
             }
-
         }
+        return s;
     }
 
     private void failedRobEnemy() {
@@ -60,7 +64,6 @@ public class Logic {
         player.setRespect(player.getRespect() - 20);
         System.out.println("Player gold " + player.getGold());
         System.out.println("Player respect " + player.getRespect());
-
     }
 
     private void robEnemy() {
@@ -79,5 +82,16 @@ public class Logic {
         System.out.println("Player respect " + player.getRespect());
     }
 
-
+    public int checkIt() {
+        int i=0;
+        if (player.getGold()>=50000){
+            System.out.println("POBEDIL EPTA");
+            i=1;
+        }
+        if ((player.getRespect()<0) ||(player.getGold()<0)){
+            System.out.println("PROEBAL EPTA");
+            i=2;
+        }
+        return i;
+    }
 }
