@@ -9,7 +9,7 @@ public class Gui {
     JFrame enterNameFrame;
     JFrame startFrame;
     JFrame enterFrame;
-    JFrame infoFrame;
+
     JFrame mainMenuFrame;
 
 
@@ -19,6 +19,9 @@ public class Gui {
     private JTextField enterNameTextField;
     private JTextField enemyLvlTextField;
     private JTextField enemyGoldTextField;
+    private JButton robKorovanButton;
+    private JFrame enemyInfoFrame;
+    private JButton infoEnemyButton;
 
     public void goGui() {
         startFrame = new JFrame("SuperGame");
@@ -44,7 +47,6 @@ public class Gui {
             goEnterNameFrame();
         }
     }
-
     private void goEnterNameFrame() {
         enterNameFrame = new JFrame("Enter Name");
         enterNameFrame.setResizable(false);
@@ -158,7 +160,8 @@ public class Gui {
 
         skipButton = new JButton();
         skipButton.setText("Начать");
-        JButton robKorovanButton = new JButton("Ограбить");
+        robKorovanButton = new JButton("Ограбить");
+        robKorovanButton.setVisible(false);
         JButton backButton = new JButton("К меню");
 
         mainPanel = new JPanel(null);
@@ -169,9 +172,13 @@ public class Gui {
         korovanPanel.setBackground(new Color(152, 147, 155));
         korovanPanel.setBounds(10, 10, 235, 200);
 
-        JPanel resultRob = new JPanel(null);
-        resultRob.setBackground(new Color(152, 147, 155));
-        resultRob.setBounds(255, 10, 230, 200);
+        JTextArea resultRob = new JTextArea();
+        JScrollPane jScrollPane = new JScrollPane(resultRob);
+        jScrollPane.setPreferredSize(new Dimension(100,100));
+        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane.setBackground(new Color(152, 147, 155));
+        jScrollPane.setBounds(255, 10, 230, 200);
 
         JLabel enemyLvlLabel = new JLabel("Уровень корована");
         JLabel enemyGoldLabel = new JLabel("Золото корована");
@@ -181,7 +188,7 @@ public class Gui {
         enemyGoldTextField = new JTextField();
         enemyGoldTextField.setEditable(false);
 
-        JButton infoEnemyButton = new JButton("Инфо о короване");
+        infoEnemyButton = new JButton("Инфо о короване");
 
         korovanPanel.add(enemyLvlLabel);
         korovanPanel.add(enemyGoldLabel);
@@ -195,10 +202,12 @@ public class Gui {
         enemyGoldLabel.setBounds(35, 90, 110, 20);
         enemyGoldTextField.setBounds(175, 90, 50, 20);
         infoEnemyButton.setBounds(50, 145, 135, 20);
+        infoEnemyButton.addActionListener(new InfoEnemyListener());
+        infoEnemyButton.setVisible(false);
 
 
         mainPanel.add(korovanPanel);
-        mainPanel.add(resultRob);
+        mainPanel.add(jScrollPane);
 
 
         panelButton.add(skipButton);
@@ -218,10 +227,35 @@ public class Gui {
         backButton.addActionListener(new BackButtonListener());
 
     }
+    public class   InfoEnemyListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            goEnemyInfoFrame();
+        }
+    }
+
+    private void goEnemyInfoFrame() {
+        enemyInfoFrame = new JFrame("SuperGame");
+        enemyInfoFrame.setResizable(false);
+        enemyInfoFrame.setSize(220, 100);
+        enemyInfoFrame.setLocationRelativeTo(null);
+        enemyInfoFrame.setVisible(true);
+        enemyInfoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        enemyInfoFrame.setLayout(null);
+
+        JLabel label =  new JLabel("Шанс удачного ограбления: "+logic.chance*100+"%");
+        enemyInfoFrame.add(label);
+
+        label.setBounds(0,0,210,50);
+    }
 
     public class RobKorovanListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            logic.nextProcess(2);
+            enemyLvlTextField.setText(String.valueOf(logic.enemy.getLvl()));
+            enemyGoldTextField.setText(String.valueOf(logic.enemy.getGold()));
+
 
         }
     }
@@ -231,11 +265,13 @@ public class Gui {
         public void actionPerformed(ActionEvent e) {
             if (skipButton.getText().equals("Начать")) {
                 skipButton.setText("Следующий");
+                infoEnemyButton.setVisible(true);
                 logic.createEnemy();
                 enemyLvlTextField.setText(String.valueOf(logic.enemy.getLvl()));
                 enemyGoldTextField.setText(String.valueOf(logic.enemy.getGold()));
+                robKorovanButton.setVisible(true);
             } else {
-                logic.goNext();
+                logic.nextProcess(1);
                 enemyLvlTextField.setText(String.valueOf(logic.enemy.getLvl()));
                 enemyGoldTextField.setText(String.valueOf(logic.enemy.getGold()));
             }
@@ -247,6 +283,7 @@ public class Gui {
         public void actionPerformed(ActionEvent e) {
             mainMenuFrame.setVisible(false);
             enterFrame.setVisible(true);
+
         }
     }
 
