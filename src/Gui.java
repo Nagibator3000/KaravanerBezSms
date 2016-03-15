@@ -4,47 +4,84 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Gui {
-    JFrame mainFrame;
+     Logic logic = new Logic();
+
+    JFrame enterNameFrame;
+    JFrame startFrame;
     JFrame enterFrame;
     JFrame infoFrame;
-    public static String playerName;
     JFrame actionFrame;
-    Start start;
-    private JLabel enemyInfoLvl;
-    private JPanel mainPanel;
-    private JLabel enemyInfoGold;
-    private JPanel panelSmartInfo;
-    private JLabel respectLabel;
-    private JLabel lvlLabel;
-    private JLabel goldLabel;
 
-    public void goGui() {
-        mainFrame = new JFrame("SuperGame");
-        mainFrame.setResizable(false);
-        mainFrame.setSize(500, 500);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLayout(null);
-        mainFrame.getContentPane().setBackground(new Color(137, 162, 54));
+    JLabel enemyInfoLvl;
+    JPanel mainPanel;
+    JLabel enemyInfoGold;
+    JPanel panelSmartInfo;
+    JLabel respectLabel;
+    JLabel lvlLabel;
+    JLabel goldLabel;
+    JButton buttonSkip;
+    private JTextField enterNameTextField;
+
+    public  void goGui() {
+        startFrame = new JFrame("SuperGame");
+        startFrame.setResizable(false);
+        startFrame.setSize(500, 500);
+        startFrame.setLocationRelativeTo(null);
+        startFrame.setVisible(true);
+        startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        startFrame.setLayout(null);
+        startFrame.getContentPane().setBackground(new Color(137, 162, 54));
 
         JButton beginButton = new JButton("Начать игру");
-        mainFrame.add(beginButton);
+        startFrame.add(beginButton);
         beginButton.setForeground(Color.WHITE);
         beginButton.setBackground(new Color(62, 81, 0));
         beginButton.setBounds(145, 125, 200, 50);
-        beginButton.addActionListener(new ListenerForJOpPan());
+        beginButton.addActionListener(new BeginButtonListener());
     }
-
-    public class ListenerForJOpPan implements ActionListener {
-
+    public  class  BeginButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            start.player.name = JOptionPane.showInputDialog("Введите ваше имя");
-            mainFrame.dispose();
-            goEnterGui();
+            goEnterNameFrame();
         }
     }
+
+    private void goEnterNameFrame() {
+        enterNameFrame = new JFrame("Enter Name");
+        enterNameFrame.setResizable(false);
+        enterNameFrame.setSize(200, 160);
+        enterNameFrame.setLocationRelativeTo(null);
+        enterNameFrame.setVisible(true);
+        enterNameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        enterNameFrame.setLayout(null);
+        enterNameFrame.getContentPane().setBackground(new Color(137,152,64));
+
+        JLabel enterNameLabel = new JLabel("ВВЕДИТЕ ВАШЕ ИМЯ");
+        enterNameTextField = new JTextField("Имя");
+        JButton readNameButton = new JButton("Ок");
+
+        enterNameFrame.add(enterNameLabel);
+        enterNameFrame.add(enterNameTextField);
+        enterNameFrame.add(readNameButton);
+
+        enterNameLabel.setBounds(40,10,120,20);
+        enterNameTextField.setBounds(40,50,120,20);
+        readNameButton.setBounds(75,95,50,20);
+
+        readNameButton.addActionListener(new ReadNameButtonListener());
+    }
+
+    public class ReadNameButtonListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           logic.player.setName(enterNameTextField.getText());
+            enterNameFrame.dispose();
+            logic.createGame();
+            goEnterGui();
+
+        }
+    }
+
 
     public void goEnterGui() {
         enterFrame = new JFrame("Enter Screen");
@@ -58,8 +95,9 @@ public class Gui {
         JButton b1 = new JButton("Info");
         JButton b2 = new JButton("Грабить корованы");
         JButton b3 = new JButton("Рынок");
+
         JLabel label = new JLabel();
-        label.setText("Вы начинающий грабитель корованов " + start.player.name);
+        label.setText("Вы начинающий грабитель корованов ");
 
         enterFrame.add(label);
         enterFrame.add(b1);
@@ -80,8 +118,6 @@ public class Gui {
         b3.setForeground(Color.WHITE);
         b3.setBackground(Color.DARK_GRAY);
 
-        b1.addActionListener(new InfoListener());
-        b2.addActionListener(new GoActionListener());
     }
 
     public void goInfoFrame() {
@@ -94,24 +130,8 @@ public class Gui {
         JButton b = new JButton("ok");
         infoFrame.add(b);
         b.setBounds(100, 100, 100, 100);
-        b.addActionListener(new ExitOnInfoFrame());
     }
 
-    public class ExitOnInfoFrame implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            infoFrame.dispose();
-        }
-    }
-
-    public class GoActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            goActionFrame();
-
-        }
-    }
 
     private void goActionFrame() {
         actionFrame = new JFrame("SuperGame");
@@ -140,12 +160,9 @@ public class Gui {
         enemyInfoGold.setForeground(Color.white);
         enemyInfoLvl.setForeground(Color.white);
 
-        goldLabel = new JLabel("Золото          " + String.valueOf(start.player.gold));
-        lvlLabel = new JLabel("Уровень       " + String.valueOf(start.player.lvl));
-        respectLabel = new JLabel("Уважение    " + String.valueOf(start.player.respect));
 
-        JButton buttonSkip = new JButton();
-        buttonSkip.setText("Пропустить");
+        buttonSkip = new JButton();
+        buttonSkip.setText("Начать");
         JButton robKaravanButton = new JButton("Ограбить");
         JButton button = new JButton("TODO");
 
@@ -173,10 +190,8 @@ public class Gui {
         lvlLabel.setBounds(15, 34, 150, 30);
         respectLabel.setBounds(15, 64, 150, 30);
 
-        buttonSkip.setBounds(330, 20, 100, 30);
-        buttonSkip.addActionListener(new SkipListener());
+        buttonSkip.setBounds(330, 20, 120, 30);
         robKaravanButton.setBounds(200, 20, 100, 30);
-        robKaravanButton.addActionListener(new RobListener());
         button.setBounds(70, 20, 100, 30);
 
 
@@ -186,38 +201,6 @@ public class Gui {
 
     }
 
-    public class SkipListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            start.createEnemy();
-            enemyInfoLvl.setText(String.valueOf("Уровень каравана " + start.enemy.lvl));
-            enemyInfoGold.setText(String.valueOf("Золото карована " + start.enemy.gold));
-
-        }
-    }
-    public  class RobListener implements ActionListener{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            start.player.gold+=start.enemy.gold;
-            System.out.println(start.player.gold);
-            goldLabel.setText("Золото          " + String.valueOf(start.player.gold));
-            lvlLabel.setText("Уровень       " + String.valueOf(start.player.lvl));
-            respectLabel.setText("Уважение    " + String.valueOf(start.player.respect));
-
-        }
-    }
-
-    public void printEnemyOnMainPanel() {
-
-    }
-
-    public class InfoListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            goInfoFrame();
-        }
-    }
-
 }
+
+

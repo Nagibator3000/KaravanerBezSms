@@ -1,19 +1,22 @@
 package Models;
 
-public  class Enemy {
-   public int lvl;
-    public int gold;
+public class Enemy {
+    int lvl;
+    int gold;
 
-    public Enemy() {
+    public int getGold() {
+        return gold;
     }
 
-    public int power;
-
-    public Enemy(int lvl, int gold, int power) {
-        this.lvl = lvl;
+    public void setGold(int gold) {
         this.gold = gold;
-        this.power = power;
     }
 
+    public int getLvl() {
+        return lvl;
+    }
 
+    public void setLvl(int lvl) {
+        this.lvl = lvl;
+    }
 }
